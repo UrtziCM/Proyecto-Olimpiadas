@@ -106,7 +106,7 @@ public class OlimpiadaController implements javafx.fxml.Initializable {
 
     @FXML
     void anadirEntrada(ActionEvent event) {
-
+    	gestor.addItemToDatabase(null);
     }
 	
 
