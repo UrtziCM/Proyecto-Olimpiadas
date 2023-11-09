@@ -110,6 +110,9 @@ public class OlimpiadaController implements javafx.fxml.Initializable {
     }
 	
 
+    /**
+     * Prepares all the TableViews to receive Objects of them item type. Looping through their collumns and checking the name.
+     */
     private void prepareTablesForDBItems() {
 		for (TableColumn<Deporte, ?> tc : deporteTableView.getColumns()) {
 			tc.setCellValueFactory(new PropertyValueFactory<>(tc.getText()));
@@ -124,7 +127,7 @@ public class OlimpiadaController implements javafx.fxml.Initializable {
 			tc.setCellValueFactory(new PropertyValueFactory<>(tc.getText()));
 		}
 		for (TableColumn<Olimpiada, ?> tc : olimpiadaTableView.getColumns()) {
-			String name = tc.getText().replace("ñ","ni");
+			String name = tc.getText().replace("ñ","ni"); // Remember to remove 'ñ' since it gives problems.
 			tc.setCellValueFactory(new PropertyValueFactory<>(name));
 		}
 		for (TableColumn<Participacion, ?> tc : participacionTableView.getColumns()) {
