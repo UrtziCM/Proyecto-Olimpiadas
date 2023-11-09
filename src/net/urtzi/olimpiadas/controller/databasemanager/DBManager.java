@@ -77,25 +77,20 @@ public class DBManager {
 		stmt.executeUpdate(sql);
 		conexion.closeConexion();
 	}
+	/**
+	 * Modifies the oldDeporte entry from the database with the values fo newDeporte-
+	 * @param oldDeporte the instance to be modified
+	 * @param newDeporte the new version of the object
+	 * @throws SQLException if something goes wrong with the SQL syntax or the connection.
+	 */
 
-//	public void modificarDeporte(Deporte oldDeporte, Deporte newDeporte) throws SQLException {
-//		conexion = new ConnectionDB();
-//		Statement stmt = conexion.getConexion().createStatement();
-//		String sql = "UPDATE aeropuertos " + "SET nombre='" + newAeropuerto.getNombre() + "'," + "anio_inauguracion='"
-//				+ newAeropuerto.getAnio() + "'," + "capacidad='" + newAeropuerto.getCapacidad() + "' WHERE id="
-//				+ oldAeropuerto.getId();
-//		stmt.executeUpdate(sql);
-//		if (oldAeropuerto.getSocios() > 0) {
-//			sql = "UPDATE aeropuertos_privados " + "SET numero_socios='" + newAeropuerto.getSocios()
-//					+ "' WHERE id_aeropuerto=" + oldAeropuerto.getId();
-//		} else {
-//			sql = "UPDATE aeropuertos_publicos SET financiacion='" + newAeropuerto.getFinanciacion() + "',"
-//					+ "num_trabajadores='" + newAeropuerto.getTrabajadores() + "' WHERE id_aeropuerto="
-//					+ oldAeropuerto.getId();
-//		}
-//		stmt.executeUpdate(sql);
-//		conexion.closeConexion();
-//	}
+	public void modificarDeporte(Deporte oldDeporte, Deporte newDeporte) throws SQLException {
+		conexion = new ConnectionDB();
+		Statement stmt = conexion.getConexion().createStatement();
+		String sql = "UPDATE Deporte " + "SET nombre='" + newDeporte.getNombre() + "'," + "id_deporte=" + newDeporte.getId() + " WHERE id=" + oldDeporte.getId();
+		stmt.executeUpdate(sql);
+		conexion.closeConexion();
+	}
 
 	/**
 	 * Retrieves the data from the Deportista table in the database and returns an
