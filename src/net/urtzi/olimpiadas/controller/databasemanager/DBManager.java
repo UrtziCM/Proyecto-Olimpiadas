@@ -378,8 +378,6 @@ public class DBManager {
 			ResultSet rs = pstmt.executeQuery();
 
 			while (rs.next()) {
-				int id = rs.getInt("id_deporte");
-
 				Deportista dep = new Deportista(rs.getInt("id_deportista"), rs.getString("nombre_deportista"),
 						rs.getString("sexo").charAt(0), rs.getInt("peso"), rs.getInt("altura"));
 				Olimpiada ol = new Olimpiada(rs.getInt("id_olimpiada"), rs.getString("nombre_olimpiada"),
@@ -427,7 +425,7 @@ public class DBManager {
 		String sql = "UPDATE Deporte " 
 					+ "SET id_deportista=" + newParticipacion.getDeportista().getId() + "," 
 					+ "id_evento=" + newParticipacion.getEvento().getId() + ","
-					+ "id_evento=" + newParticipacion.getEquipo().getId() + ","
+					+ "id_equipo=" + newParticipacion.getEquipo().getId() + ","
 					+ "temporada=" + newParticipacion.getEdad() + ","
 					+ "ciudad='" + newParticipacion.getMedalla() + "' "
 					+ "WHERE id_deportista=" + oldParticipacion.getDeportista().getId() + " AND "
@@ -435,6 +433,26 @@ public class DBManager {
 					+ "id_equipo=" + oldParticipacion.getEquipo().getId();
 		stmt.executeUpdate(sql);
 		conexion.closeConexion();
+	}
+	
+	public void addItemToDatabase(Object item) {
+		try {
+			if (item instanceof Deporte) {
+				addDeporte((Deporte)item);
+			} else if (item instanceof Deportista) {
+				addDeportista((Deportista) item);
+			} else if (item instanceof Equipo) {
+				addEquipo((Equipo) item);
+			} else if (item instanceof Evento){
+				addEvento((Evento) item);
+			}else if (item instanceof Olimpiada){
+				addOlimpiada((Olimpiada)item);
+			}else if (item instanceof Participacion) {
+				addParticipacion((Participacion) item);
+			}
+		} catch (SQLException ex) {
+			System.out.println("Error en la adicion de datos a la base de datos.");
+		}
 	}
 
 }
