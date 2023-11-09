@@ -137,6 +137,26 @@ public class DBManager {
 		pstm.executeUpdate(sqlAddDeportista);
 		conexion.closeConexion();
 	}
+	/**
+	 * Modifies the oldDeportista entry from the database with the values for the newDeportista.
+	 * @param oldDeportista the instance to be modified
+	 * @param newDeportista the new version of the object
+	 * @throws SQLException if something goes wrong with the SQL syntax or the connection.
+	 */
+
+	public void modificarDeportista(Deportista oldDeportista, Deportista newDeportista) throws SQLException {
+		conexion = new ConnectionDB();
+		Statement stmt = conexion.getConexion().createStatement();
+		String sql = "UPDATE Deporte " 
+					+ "SET id_deportista=" + newDeportista.getId() + "," 
+					+ "nombre='" + newDeportista.getNombre() + "',"
+					+ "sexo='" + newDeportista.getSexo() + "',"
+					+ "peso=" + newDeportista.getPeso()+ ","
+					+ "altura=" + newDeportista.getAltura() 
+					+ " WHERE id=" + oldDeportista.getId();
+		stmt.executeUpdate(sql);
+		conexion.closeConexion();
+	}
 
 	/**
 	 * Retrieves the data from the Deportista table in the database and returns an
@@ -187,6 +207,25 @@ public class DBManager {
 		}
 		return true;
 	}
+	/**
+	 * Modifies the oldEquipo entry from the database with the values for the newEquipo.
+	 * @param oldEquipo the instance to be modified
+	 * @param newEquipo the new version of the object
+	 * @throws SQLException if something goes wrong with the SQL syntax or the connection.
+	 */
+
+	public void modificarEquipo(Equipo oldEquipo, Equipo newEquipo) throws SQLException {
+		conexion = new ConnectionDB();
+		Statement stmt = conexion.getConexion().createStatement();
+		String sql = "UPDATE Deporte " 
+					+ "SET id_equipo=" + newEquipo.getId() + "," 
+					+ "nombre='" + newEquipo.getNombre() + "',"
+					+ "iniciales='" + newEquipo.getAbreviatura()
+					+ " WHERE id=" + oldEquipo.getId();
+		stmt.executeUpdate(sql);
+		conexion.closeConexion();
+	}
+	
 
 	/**
 	 * Retrieves all the events from the database's Evento table as an ObservableList
