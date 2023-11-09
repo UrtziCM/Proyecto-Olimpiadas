@@ -5,6 +5,9 @@ import java.util.ResourceBundle;
 
 import javafx.event.ActionEvent;
 import javafx.event.Event;
+/**
+ * Controlador principal de la aplicacion principal.
+ */
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
@@ -15,15 +18,13 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
 import javafx.scene.control.TextField;
+import net.urtzi.olimpiadas.controller.databasemanager.DBManager;
 import net.urtzi.olimpiadas.models.Deporte;
 import net.urtzi.olimpiadas.models.Deportista;
 import net.urtzi.olimpiadas.models.Equipo;
 import net.urtzi.olimpiadas.models.Evento;
 import net.urtzi.olimpiadas.models.Olimpiada;
 import net.urtzi.olimpiadas.models.Participacion;
-/**
- * Controlador principal de la aplicacion principal.
- */
 
 public class OlimpiadaController implements javafx.fxml.Initializable {
 
@@ -55,43 +56,51 @@ public class OlimpiadaController implements javafx.fxml.Initializable {
 
     @FXML // fx:id="participacionTableView"
     private TableView<Participacion> participacionTableView;
+    private DBManager gestor = new DBManager();
 
     /**
      * Method inherited from the Initializable interface, allows to execute code when the aplication loads.
      */
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
-
+		prepareTablesForDBItems();
+		deporteTableView.setItems(gestor.cargarDeportes());
 	}
 	
 	@FXML
     void cargarDeporte(Event event) {
-
+		deporteTableView.setItems(gestor.cargarDeportes());
+		buildDataManipulationGridPane(deporteTableView);
     }
 
-	@FXML
+	    @FXML
     void cargarDeportista(Event event) {
-
+    	deportistaTableView.setItems(gestor.cargarDeportistas());
+    	buildDataManipulationGridPane(deportistaTableView);
     }
 
     @FXML
     void cargarEquipo(Event event) {
-
+    	equipoTableView.setItems(gestor.cargarEquipos());
+    	buildDataManipulationGridPane(equipoTableView);
     }
 
     @FXML
     void cargarEvento(Event event) {
-
+    	eventoTableView.setItems(gestor.cargarEventos());
+    	buildDataManipulationGridPane(eventoTableView);
     }
 
     @FXML
     void cargarOlimpiada(Event event) {
-
+    	olimpiadaTableView.setItems(gestor.cargarOlimpiadas());
+    	buildDataManipulationGridPane(olimpiadaTableView);
     }
 
     @FXML
     void cargarParticipacion(Event event) {
-
+    	participacionTableView.setItems(gestor.cargarParticipaciones());
+    	buildDataManipulationGridPane(participacionTableView);
     }
     
 
@@ -101,5 +110,37 @@ public class OlimpiadaController implements javafx.fxml.Initializable {
     }
 	
 
+    private void prepareTablesForDBItems() {
+		for (TableColumn<Deporte, ?> tc : deporteTableView.getColumns()) {
+			tc.setCellValueFactory(new PropertyValueFactory<>(tc.getText()));
+		}
+		for (TableColumn<Deportista, ?> tc : deportistaTableView.getColumns()) {
+			tc.setCellValueFactory(new PropertyValueFactory<>(tc.getText()));
+		}
+		for (TableColumn<Equipo, ?> tc : equipoTableView.getColumns()) {
+			tc.setCellValueFactory(new PropertyValueFactory<>(tc.getText()));
+		}
+		for (TableColumn<Evento, ?> tc : eventoTableView.getColumns()) {
+			tc.setCellValueFactory(new PropertyValueFactory<>(tc.getText()));
+		}
+		for (TableColumn<Olimpiada, ?> tc : olimpiadaTableView.getColumns()) {
+			String name = tc.getText().replace("ñ","ni");
+			tc.setCellValueFactory(new PropertyValueFactory<>(name));
+		}
+		for (TableColumn<Participacion, ?> tc : participacionTableView.getColumns()) {
+			tc.setCellValueFactory(new PropertyValueFactory<>(tc.getText()));
+		}
+	}
     
+    private void buildDataManipulationGridPane(TableView<?> table) {
+		dataManipulationGridPane.getChildren().clear();
+    	int i = 0;
+		for (TableColumn<?, ?> tc : table.getColumns()) {
+			dataManipulationGridPane.addRow(i, new Label(tc.getText()), new TextField());
+			i++;
+		}
+		dataManipulationGridPane.addRow(5, anadirButton, borrarButton);
+		dataManipulationGridPane.addRow(6, replaceCheckBox);
+		GridPane.setColumnSpan(replaceCheckBox, 2);
+	}
 }
