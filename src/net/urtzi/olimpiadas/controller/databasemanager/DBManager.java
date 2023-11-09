@@ -382,5 +382,27 @@ public class DBManager {
 		pstm.executeUpdate(sqlAddParticipacion);
 		conexion.closeConexion();
 	}
+	/**
+	 * Modifies the oldParticipacion entry from the database with the values for the newParticipacion.
+	 * @param oldParticipacion the instance to be modified
+	 * @param newParticipacion the new version of the object
+	 * @throws SQLException if something goes wrong with the SQL syntax or the connection.
+	 * @see net.urtzi.olimpiadas.models.Participacion
+	 */
+	public void modificarParticipacion(Participacion oldParticipacion, Participacion newParticipacion) throws SQLException {
+		conexion = new ConnectionDB();
+		Statement stmt = conexion.getConexion().createStatement();
+		String sql = "UPDATE Deporte " 
+					+ "SET id_deportista=" + newParticipacion.getDeportista().getId() + "," 
+					+ "id_evento=" + newParticipacion.getEvento().getId() + ","
+					+ "id_evento=" + newParticipacion.getEquipo().getId() + ","
+					+ "temporada=" + newParticipacion.getEdad() + ","
+					+ "ciudad='" + newParticipacion.getMedalla() + "' "
+					+ "WHERE id_deportista=" + oldParticipacion.getDeportista().getId() + " AND "
+					+ "id_evento=" + oldParticipacion.getEvento().getId() + " AND "
+					+ "id_equipo=" + oldParticipacion.getEquipo().getId();
+		stmt.executeUpdate(sql);
+		conexion.closeConexion();
+	}
 
 }
