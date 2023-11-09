@@ -224,7 +224,7 @@ public class DBManager {
 					+ "SET id_equipo=" + newEquipo.getId() + "," 
 					+ "nombre='" + newEquipo.getNombre() + "',"
 					+ "iniciales='" + newEquipo.getAbreviatura() + "' "
-					+ "WHERE id=" + oldEquipo.getId();
+					+ "WHERE id_equipo=" + oldEquipo.getId();
 		stmt.executeUpdate(sql);
 		conexion.closeConexion();
 	}
@@ -326,7 +326,7 @@ public class DBManager {
 					+ "anio=" + newOlimpiada.getAnio() + "',"
 					+ "temporada='" + newOlimpiada.getTemporada() + "',"
 					+ "ciudad='" + newOlimpiada.getCiudad() + "',"
-					+ "WHERE id=" + oldOlimpiada.getId();
+					+ "WHERE id_olimpiada=" + oldOlimpiada.getId();
 		stmt.executeUpdate(sql);
 		conexion.closeConexion();
 	}
