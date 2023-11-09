@@ -4,7 +4,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -261,6 +260,39 @@ public class DBManager {
 			System.out.println("Error en la carga de eventos desde la base de datos");
 		}
 		return eventos;
+	}
+	/**
+	 * Adds a new Evento into the database, in case it does exist throws an exception.
+	 * @param newEvento the Evento to be added into the database.
+	 * @throws SQLException if it already exists or the connection raised errors.
+	 * @see net.urtzi.olimpiadas.models.Evento
+	 */
+	public void addEvento(Evento newEvento) throws SQLException {
+			conexion = new ConnectionDB();
+			String sqlAddEvento = "INSERT INTO Evento VALUES(" + newEvento.getId() + "," + newEvento.getNombre() + "," + newEvento.getOlimpiada().getId() + "," + newEvento.getDeporte().getId() + ")";
+			PreparedStatement pstm = conexion.getConexion().prepareStatement(sqlAddEvento);
+			pstm.executeUpdate(sqlAddEvento);
+			conexion.closeConexion();
+	}
+	/**
+	 * Modifies the oldEvento entry from the database with the values for the newEvento.
+	 * @param oldEvento the instance to be modified
+	 * @param newEvento the new version of the object
+	 * @throws SQLException if something goes wrong with the SQL syntax or the connection.
+	 * @see net.urtzi.olimpiadas.models.Evento
+	 */
+
+	public void modificarEvento(Evento oldEvento, Evento newEvento) throws SQLException {
+		conexion = new ConnectionDB();
+		Statement stmt = conexion.getConexion().createStatement();
+		String sql = "UPDATE Deporte " 
+					+ "SET id_equipo=" + newEvento.getId() + "," 
+					+ "nombre='" + newEvento.getNombre() + "',"
+					+ "id_olimpiada=" + newEvento.getOlimpiada().getId() + ","
+					+ "id_deporte=" + newEvento.getDeporte().getId() + " "
+					+ "WHERE id_evento=" + oldEvento.getId();
+		stmt.executeUpdate(sql);
+		conexion.closeConexion();
 	}
 
 	/**
