@@ -9,9 +9,10 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import net.urtzi.olimpiadas.models.*;
 
-
 /**
- * Database manager class uses a ConnectionDB to access a database and retrieve data.
+ * Database manager class uses a ConnectionDB to access a database and retrieve
+ * data.
+ * 
  * @see net.urtzi.olimpiadas.controller.database.ConnectionDB
  */
 public class DBManager {
@@ -20,6 +21,7 @@ public class DBManager {
 	/**
 	 * Retrieves the data from the Deporte table in the database and returns an
 	 * ObservableList with it.
+	 * 
 	 * @return ObservableList with the Deporte objects from the database.
 	 * @see net.urtzi.olimpiadas.models.Deporte
 	 */
@@ -45,28 +47,38 @@ public class DBManager {
 
 		} catch (SQLException e) {
 			System.out.println("Error en la carga de deportes desde la base de datos");
-			System.out.println(e);
 		}
 		return deportes;
 	}
 
 	/**
 	 * Uses a connection to the database to add a Deporte obect to the database
+	 * 
 	 * @param newDeporte the Deporte to be added
-	 * @throws SQLException in case the Deporte already exists or the connection raises errors.
+	 * @throws SQLException in case the Deporte already exists or the connection
+	 *                      raises errors.
 	 * @see net.urtzi.olimpiadas.models.Deporte
 	 */
 	public void addDeporte(Deporte newDeporte) throws SQLException {
 		conexion = new ConnectionDB();
 		Statement pstm = conexion.getConexion().createStatement();
-		String sqlAddDeporte = "INSERT INTO Deporte VALUES(" + newDeporte.getId() + "," + newDeporte.getNombre() + ")";
+		String sqlAddDeporte;
+		if (newDeporte.getId() != -1) {
+			sqlAddDeporte = "INSERT INTO Deporte VALUES(" + newDeporte.getId() + "," + newDeporte.getNombre() + ")";
+		} else {
+			sqlAddDeporte = "INSERT INTO Deporte(nombre) VALUES('" + newDeporte.getNombre() + "')";
+		}
 		pstm.executeUpdate(sqlAddDeporte);
 		conexion.closeConexion();
 	}
+
 	/**
-	 * Uses a connection to the database to delete a Deporte object from the database
+	 * Uses a connection to the database to delete a Deporte object from the
+	 * database
+	 * 
 	 * @param deporte the Deporte to be erased
-	 * @throws SQLException if the connection raises errors or the SQL query has errors .
+	 * @throws SQLException if the connection raises errors or the SQL query has
+	 *                      errors .
 	 * @see net.urtzi.olimpiadas.models.Deporte
 	 */
 	public void borrarDeporte(Deporte deporte) throws SQLException {
@@ -76,25 +88,52 @@ public class DBManager {
 		stmt.executeUpdate(sql);
 		conexion.closeConexion();
 	}
+
 	/**
-	 * Modifies the oldDeporte entry from the database with the values fo newDeporte-
+	 * Modifies the oldDeporte entry from the database with the values fo
+	 * newDeporte-
+	 * 
 	 * @param oldDeporte the instance to be modified
 	 * @param newDeporte the new version of the object
-	 * @throws SQLException if something goes wrong with the SQL syntax or the connection.
+	 * @throws SQLException if something goes wrong with the SQL syntax or the
+	 *                      connection.
 	 * @see net.urtzi.olimpiadas.models.Deporte
 	 */
 
 	public void modificarDeporte(Deporte oldDeporte, Deporte newDeporte) throws SQLException {
 		conexion = new ConnectionDB();
 		Statement stmt = conexion.getConexion().createStatement();
-		String sql = "UPDATE Deporte " + "SET nombre='" + newDeporte.getNombre() + "'," + "id_deporte=" + newDeporte.getId() + " WHERE id=" + oldDeporte.getId();
+		String sql = "UPDATE Deporte " + "SET nombre='" + newDeporte.getNombre() + "'," + "id_deporte="
+				+ newDeporte.getId() + " WHERE id=" + oldDeporte.getId();
 		stmt.executeUpdate(sql);
 		conexion.closeConexion();
+	}
+	
+	/**
+	 * Returns a Deporte Object with the data from the database where the item has the given ID
+	 * 
+	 * @param id the ID of the item in the database
+	 * @see net.urtzi.olimpiadas.models.Deporte
+	 */
+
+	public Deporte getDeporteByID(int id) throws SQLException {
+		conexion = new ConnectionDB();
+		Deporte dep = null;
+		Statement stmt = conexion.getConexion().createStatement();
+		String sql = String.format("SELECT * FROM Deporte WHERE id_deporte = %d", id);
+		stmt.executeQuery(sql);
+		ResultSet rs = stmt.getResultSet();
+		if (rs.next()) {
+			dep = new Deporte(rs.getInt(1),rs.getString("nombre"));
+		}
+		conexion.closeConexion();
+		return dep;
 	}
 
 	/**
 	 * Retrieves the data from the Deportista table in the database and returns an
 	 * ObservableList all entries in it.
+	 * 
 	 * @return ObservableList with the Deportista objects from the database.
 	 * @see net.urtzi.olimpiadas.models.Deportista
 	 */
@@ -124,44 +163,96 @@ public class DBManager {
 		}
 		return deportistas;
 	}
+
 	/**
-	 * Adds a new Deportista into the database, in case it does exist or the connection fails, returns false
+	 * Adds a new Deportista into the database, in case it does exist or the
+	 * connection fails, returns false
+	 * 
 	 * @param newDeportista the Deportista to be added into the database.
-	 * @throws SQLException if the Deportista does exist or the connection raised errors.
+	 * @throws SQLException if the Deportista does exist or the connection raised
+	 *                      errors.
 	 * @see net.urtzi.olimpiadas.models.Deportista
 	 */
 	public void addDeportista(Deportista newDeportista) throws SQLException {
 		conexion = new ConnectionDB();
-		String sqlAddDeportista = "INSERT INTO Deportista VALUES(" + newDeportista.getId() + "," + newDeportista.getNombre() + "," + newDeportista.getSexo()+ "," + newDeportista.getPeso()+ "," + newDeportista.getAltura() + ")";
+		String sqlAddDeportista;
+		if (newDeportista.getId() != -1) {
+			sqlAddDeportista = "INSERT INTO Deportista VALUES(" + newDeportista.getId() + ",'"
+					+ newDeportista.getNombre() + "','" + newDeportista.getSexo() + "'," + newDeportista.getPeso() + ","
+					+ newDeportista.getAltura() + ")";
+		} else {
+			sqlAddDeportista = "INSERT INTO Deportista (nombre,sexo,peso,altura) VALUES('" + newDeportista.getNombre()
+					+ "','" + newDeportista.getSexo() + "'," + newDeportista.getPeso() + "," + newDeportista.getAltura()
+					+ ")";
+		}
 		Statement pstm = conexion.getConexion().prepareStatement(sqlAddDeportista);
 		pstm.executeUpdate(sqlAddDeportista);
 		conexion.closeConexion();
 	}
+
 	/**
-	 * Modifies the oldDeportista entry from the database with the values for the newDeportista.
+	 * Modifies the oldDeportista entry from the database with the values for the
+	 * newDeportista.
+	 * 
 	 * @param oldDeportista the instance to be modified
 	 * @param newDeportista the new version of the object
-	 * @throws SQLException if something goes wrong with the SQL syntax or the connection.
+	 * @throws SQLException if something goes wrong with the SQL syntax or the
+	 *                      connection.
 	 * @see net.urtzi.olimpiadas.models.Deportista
 	 */
 
 	public void modificarDeportista(Deportista oldDeportista, Deportista newDeportista) throws SQLException {
 		conexion = new ConnectionDB();
 		Statement stmt = conexion.getConexion().createStatement();
-		String sql = "UPDATE Deporte " 
-					+ "SET id_deportista=" + newDeportista.getId() + "," 
-					+ "nombre='" + newDeportista.getNombre() + "',"
-					+ "sexo='" + newDeportista.getSexo() + "',"
-					+ "peso=" + newDeportista.getPeso()+ ","
-					+ "altura=" + newDeportista.getAltura() 
-					+ " WHERE id=" + oldDeportista.getId();
+		String sql = "UPDATE Deporte " + "SET id_deportista=" + newDeportista.getId() + "," + "nombre='"
+				+ newDeportista.getNombre() + "'," + "sexo='" + newDeportista.getSexo() + "'," + "peso="
+				+ newDeportista.getPeso() + "," + "altura=" + newDeportista.getAltura() + " WHERE id="
+				+ oldDeportista.getId();
 		stmt.executeUpdate(sql);
 		conexion.closeConexion();
+	}
+	
+	/**
+	 * Uses a connection to the database to delete a Deportista object from the
+	 * database
+	 * 
+	 * @param deportista the Deportista to be erased
+	 * @throws SQLException if the connection raises errors or the SQL query has errors .
+	 * @see net.urtzi.olimpiadas.models.Deportista
+	 */
+	public void borrarDeportista(Deportista deportista) throws SQLException {
+		conexion = new ConnectionDB();
+		Statement stmt = conexion.getConexion().createStatement();
+		String sql = "DELETE FROM Deportista WHERE id=" + deportista.getId();
+		stmt.executeUpdate(sql);
+		conexion.closeConexion();
+	}
+	
+	/**
+	 * Returns a Deportista Object with the data from the database where the item has the given ID
+	 * 
+	 * @param id the ID of the item in the database
+	 * @see net.urtzi.olimpiadas.models.Deportista
+	 */
+
+	public Deportista getDeportistaByID(int id) throws SQLException {
+		conexion = new ConnectionDB();
+		Deportista dep = null;
+		Statement stmt = conexion.getConexion().createStatement();
+		String sql = String.format("SELECT * FROM Deportista WHERE id_deportista = %d", id);
+		stmt.executeQuery(sql);
+		ResultSet rs = stmt.getResultSet();
+		if (rs.next()) {
+			dep = new Deportista(rs.getInt(1),rs.getString(2),rs.getString(3).charAt(0),rs.getInt(4),rs.getInt(5));
+		}
+		conexion.closeConexion();
+		return dep;
 	}
 
 	/**
 	 * Retrieves the data from the Deportista table in the database and returns an
 	 * ObservableList all entries in it.
+	 * 
 	 * @return ObservableList with the Deportista objects from the database.
 	 * @see net.urtzi.olimpiadas.models.Deportista
 	 */
@@ -190,8 +281,11 @@ public class DBManager {
 		}
 		return equipos;
 	}
+
 	/**
-	 * Adds a new Equipo into the database, in case it does exist or the connection fails, returns false
+	 * Adds a new Equipo into the database, in case it does exist or the connection
+	 * fails, returns false
+	 * 
 	 * @param newDeportista the Equipo to be added into the database.
 	 * @throws SQLException if it already exists or the connection raised errors.
 	 * @see net.urtzi.olimpiadas.models.Equipo
@@ -199,7 +293,14 @@ public class DBManager {
 	public boolean addEquipo(Equipo newEquipo) {
 		try {
 			conexion = new ConnectionDB();
-			String sqlAddEquipo = "INSERT INTO Equipo VALUES(" + newEquipo.getId() + "," + newEquipo.getNombre() + "," + newEquipo.getAbreviatura() + ")";
+			String sqlAddEquipo;
+			if (newEquipo.getId() != -1) {
+				sqlAddEquipo = "INSERT INTO Equipo VALUES(" + newEquipo.getId() + ",'" + newEquipo.getNombre() + "','"
+						+ newEquipo.getAbreviatura() + "')";
+			} else {
+				sqlAddEquipo = "INSERT INTO Equipo(nombre,abreviatura) VALUES('" + newEquipo.getNombre() + "','"
+						+ newEquipo.getAbreviatura() + "')";
+			}
 			PreparedStatement pstm = conexion.getConexion().prepareStatement(sqlAddEquipo);
 			pstm.executeUpdate(sqlAddEquipo);
 			conexion.closeConexion();
@@ -208,29 +309,68 @@ public class DBManager {
 		}
 		return true;
 	}
+
 	/**
-	 * Modifies the oldEquipo entry from the database with the values for the newEquipo.
+	 * Modifies the oldEquipo entry from the database with the values for the
+	 * newEquipo.
+	 * 
 	 * @param oldEquipo the instance to be modified
 	 * @param newEquipo the new version of the object
-	 * @throws SQLException if something goes wrong with the SQL syntax or the connection.
+	 * @throws SQLException if something goes wrong with the SQL syntax or the
+	 *                      connection.
 	 * @see net.urtzi.olimpiadas.models.Equipo
 	 */
 
 	public void modificarEquipo(Equipo oldEquipo, Equipo newEquipo) throws SQLException {
 		conexion = new ConnectionDB();
 		Statement stmt = conexion.getConexion().createStatement();
-		String sql = "UPDATE Deporte " 
-					+ "SET id_equipo=" + newEquipo.getId() + "," 
-					+ "nombre='" + newEquipo.getNombre() + "',"
-					+ "iniciales='" + newEquipo.getAbreviatura() + "' "
-					+ "WHERE id_equipo=" + oldEquipo.getId();
+		String sql = "UPDATE Deporte " + "SET id_equipo=" + newEquipo.getId() + "," + "nombre='" + newEquipo.getNombre()
+				+ "'," + "iniciales='" + newEquipo.getAbreviatura() + "' " + "WHERE id_equipo=" + oldEquipo.getId();
 		stmt.executeUpdate(sql);
 		conexion.closeConexion();
 	}
 	
+	/**
+	 * Uses a connection to the database to delete a Equipo object from the
+	 * database
+	 * 
+	 * @param equipo the Equipo to be erased
+	 * @throws SQLException if the connection raises errors or the SQL query has errors .
+	 * @see net.urtzi.olimpiadas.models.Deportista
+	 */
+	public void borrarEquipo(Equipo equipo) throws SQLException {
+		conexion = new ConnectionDB();
+		Statement stmt = conexion.getConexion().createStatement();
+		String sql = "DELETE FROM Equipo WHERE id=" + equipo.getId();
+		stmt.executeUpdate(sql);
+		conexion.closeConexion();
+	}
+	
+	/**
+	 * Returns a Equipo Object with the data from the database where the item has the given ID
+	 * 
+	 * @param id the ID of the item in the database
+	 * @see net.urtzi.olimpiadas.models.Equipo
+	 */
+
+	public Equipo getEquipoByID(int id) throws SQLException {
+		conexion = new ConnectionDB();
+		Equipo equ = null;
+		Statement stmt = conexion.getConexion().createStatement();
+		String sql = String.format("SELECT * FROM Equipo WHERE id_equipo = %d", id);
+		stmt.executeQuery(sql);
+		ResultSet rs = stmt.getResultSet();
+		if (rs.next()) {
+			equ = new Equipo(rs.getInt(1), rs.getString("nombre"), rs.getString("iniciales"));
+		}
+		conexion.closeConexion();
+		return equ;
+	}
 
 	/**
-	 * Retrieves all the events from the database's Evento table as an ObservableList
+	 * Retrieves all the events from the database's Evento table as an
+	 * ObservableList
+	 * 
 	 * @return ObservableList with all the events.
 	 * @see net.urtzi.olimpiadas.model.Evento
 	 */
@@ -261,43 +401,92 @@ public class DBManager {
 		}
 		return eventos;
 	}
+
 	/**
-	 * Adds a new Evento into the database, in case it does exist throws an exception.
+	 * Adds a new Evento into the database, in case it does exist throws an
+	 * exception.
+	 * 
 	 * @param newEvento the Evento to be added into the database.
 	 * @throws SQLException if it already exists or the connection raised errors.
 	 * @see net.urtzi.olimpiadas.models.Evento
 	 */
 	public void addEvento(Evento newEvento) throws SQLException {
-			conexion = new ConnectionDB();
-			String sqlAddEvento = "INSERT INTO Evento VALUES(" + newEvento.getId() + "," + newEvento.getNombre() + "," + newEvento.getOlimpiada().getId() + "," + newEvento.getDeporte().getId() + ")";
-			PreparedStatement pstm = conexion.getConexion().prepareStatement(sqlAddEvento);
-			pstm.executeUpdate(sqlAddEvento);
-			conexion.closeConexion();
+		conexion = new ConnectionDB();
+		String sqlAddEvento;
+		if (newEvento.getId() != -1) {
+			sqlAddEvento = "INSERT INTO Evento VALUES(" + newEvento.getId() + ",'" + newEvento.getNombre() + "',"
+					+ newEvento.getOlimpiada().getId() + "," + newEvento.getDeporte().getId() + ")";
+		} else {
+			sqlAddEvento = "INSERT INTO Evento (nombre,id_olimpiada,id_deporte) VALUES('" + newEvento.getNombre() + "',"
+					+ newEvento.getOlimpiada().getId() + "," + newEvento.getDeporte().getId() + ")";
+		}
+		PreparedStatement pstm = conexion.getConexion().prepareStatement(sqlAddEvento);
+		pstm.executeUpdate(sqlAddEvento);
+		conexion.closeConexion();
 	}
+
 	/**
-	 * Modifies the oldEvento entry from the database with the values for the newEvento.
+	 * Modifies the oldEvento entry from the database with the values for the
+	 * newEvento.
+	 * 
 	 * @param oldEvento the instance to be modified
 	 * @param newEvento the new version of the object
-	 * @throws SQLException if something goes wrong with the SQL syntax or the connection.
+	 * @throws SQLException if something goes wrong with the SQL syntax or the
+	 *                      connection.
 	 * @see net.urtzi.olimpiadas.models.Evento
 	 */
 
 	public void modificarEvento(Evento oldEvento, Evento newEvento) throws SQLException {
 		conexion = new ConnectionDB();
 		Statement stmt = conexion.getConexion().createStatement();
-		String sql = "UPDATE Deporte " 
-					+ "SET id_equipo=" + newEvento.getId() + "," 
-					+ "nombre='" + newEvento.getNombre() + "',"
-					+ "id_olimpiada=" + newEvento.getOlimpiada().getId() + ","
-					+ "id_deporte=" + newEvento.getDeporte().getId() + " "
-					+ "WHERE id_evento=" + oldEvento.getId();
+		String sql = "UPDATE Deporte " + "SET id_equipo=" + newEvento.getId() + "," + "nombre='" + newEvento.getNombre()
+				+ "'," + "id_olimpiada=" + newEvento.getOlimpiada().getId() + "," + "id_deporte="
+				+ newEvento.getDeporte().getId() + " " + "WHERE id_evento=" + oldEvento.getId();
 		stmt.executeUpdate(sql);
 		conexion.closeConexion();
+	}
+	
+	/**
+	 * Uses a connection to the database to delete a Evento object from the
+	 * database
+	 * 
+	 * @param evento the Evento to be erased
+	 * @throws SQLException if the connection raises errors or the SQL query has errors .
+	 * @see net.urtzi.olimpiadas.models.Evento
+	 */
+	public void borrarEvento(Evento evento) throws SQLException {
+		conexion = new ConnectionDB();
+		Statement stmt = conexion.getConexion().createStatement();
+		String sql = "DELETE FROM Evento WHERE id=" + evento.getId();
+		stmt.executeUpdate(sql);
+		conexion.closeConexion();
+	}
+	
+	/**
+	 * Returns a Evento Object with the data from the database where the item has the given ID
+	 * 
+	 * @param id the ID of the item in the database
+	 * @see net.urtzi.olimpiadas.models.Equipo
+	 */
+
+	public Evento getEventoByID(int id) throws SQLException {
+		conexion = new ConnectionDB();
+		Evento eve = null;
+		Statement stmt = conexion.getConexion().createStatement();
+		String sql = String.format("SELECT * FROM Evento WHERE id_evento = %d", id);
+		stmt.executeQuery(sql);
+		ResultSet rs = stmt.getResultSet();
+		if (rs.next()) {
+			eve = new Evento(rs.getInt(1), rs.getString("nombre"), getOlimpiadaByID(rs.getInt("id_olimpiada")), getDeporteByID(rs.getInt("id_deporte")));
+		}
+		conexion.closeConexion();
+		return eve;
 	}
 
 	/**
 	 * Retrieves the data from the Olimpiada table in the database and returns an
 	 * ObservableList all entries in it.
+	 * 
 	 * @return ObservableList with the Olimpiada objects from the database.
 	 * @see net.urtzi.olimpiadas.models.Olimpiada
 	 */
@@ -327,45 +516,88 @@ public class DBManager {
 		}
 		return olimpiadas;
 	}
+
 	/**
-	 * Adds a new Olimpiada into the database, in case it does exist or the connection fails, returns false
+	 * Adds a new Olimpiada into the database, in case it does exist or the
+	 * connection fails, returns false
+	 * 
 	 * @param newOlimpiada the Olimpiada to be added into the database.
 	 * @throws SQLException if it already exists or the connection raised errors.
 	 * @see net.urtzi.olimpiadas.models.Olimpiada
 	 */
 	public void addOlimpiada(Olimpiada newOlimpiada) throws SQLException {
 		conexion = new ConnectionDB();
-		String sqlAddOlimpiada = "INSERT INTO Olimpiada VALUES(" + newOlimpiada.getId() + "," + newOlimpiada.getNombre() + "," + newOlimpiada.getAnio() + "," + newOlimpiada.getTemporada() + "," + newOlimpiada.getCiudad() + ")";
+		String sqlAddOlimpiada;
+		if (newOlimpiada.getId() != -1)
+			sqlAddOlimpiada = "INSERT INTO Olimpiada VALUES(" + newOlimpiada.getId() + ",'" + newOlimpiada.getNombre()
+					+ "'," + newOlimpiada.getAnio() + ",'" + newOlimpiada.getTemporada() + "','"
+					+ newOlimpiada.getCiudad() + "')";
+		else
+			sqlAddOlimpiada = "INSERT INTO Olimpiada(nombre,anio,temporada,ciudad) VALUES('" + newOlimpiada.getNombre()
+					+ "'," + newOlimpiada.getAnio() + ",'" + newOlimpiada.getTemporada() + "','"
+					+ newOlimpiada.getCiudad() + "')";
 		Statement pstm = conexion.getConexion().prepareStatement(sqlAddOlimpiada);
 		pstm.executeUpdate(sqlAddOlimpiada);
 		conexion.closeConexion();
 	}
-	
+
 	/**
-	 * Modifies the oldOlimpiada entry from the database with the values for the newOlimpiada.
+	 * Modifies the oldOlimpiada entry from the database with the values for the
+	 * newOlimpiada.
+	 * 
 	 * @param oldOlimpiada the instance to be modified
 	 * @param newOlimpiada the new version of the object
-	 * @throws SQLException if something goes wrong with the SQL syntax or the connection.
+	 * @throws SQLException if something goes wrong with the SQL syntax or the
+	 *                      connection.
 	 * @see net.urtzi.olimpiadas.models.Olimpiada
 	 */
 
 	public void modificarOlimpiada(Olimpiada oldOlimpiada, Olimpiada newOlimpiada) throws SQLException {
 		conexion = new ConnectionDB();
 		Statement stmt = conexion.getConexion().createStatement();
-		String sql = "UPDATE Deporte " 
-					+ "SET id_olimpiada=" + newOlimpiada.getId() + "," 
-					+ "nombre='" + newOlimpiada.getNombre() + "',"
-					+ "anio=" + newOlimpiada.getAnio() + "',"
-					+ "temporada='" + newOlimpiada.getTemporada() + "',"
-					+ "ciudad='" + newOlimpiada.getCiudad() + "',"
-					+ "WHERE id_olimpiada=" + oldOlimpiada.getId();
+		String sql = "UPDATE Deporte " + "SET id_olimpiada=" + newOlimpiada.getId() + "," + "nombre='"
+				+ newOlimpiada.getNombre() + "'," + "anio=" + newOlimpiada.getAnio() + "'," + "temporada='"
+				+ newOlimpiada.getTemporada() + "'," + "ciudad='" + newOlimpiada.getCiudad() + "',"
+				+ "WHERE id_olimpiada=" + oldOlimpiada.getId();
 		stmt.executeUpdate(sql);
 		conexion.closeConexion();
+	}
+	
+	/**
+	 * Uses a connection to the database to delete a Olimpiada object from the
+	 * database
+	 * 
+	 * @param olimpiada the Olimpiada to be erased
+	 * @throws SQLException if the connection raises errors or the SQL query has errors .
+	 * @see net.urtzi.olimpiadas.models.Olimpiada
+	 */
+	public void borrarOlimpiada(Olimpiada olimpiada) throws SQLException {
+		conexion = new ConnectionDB();
+		Statement stmt = conexion.getConexion().createStatement();
+		String sql = "DELETE FROM Olimpiada WHERE id=" + olimpiada.getId();
+		stmt.executeUpdate(sql);
+		conexion.closeConexion();
+	}
+	
+	public Olimpiada getOlimpiadaByID(int id) throws SQLException {
+		conexion = new ConnectionDB();
+		Olimpiada oli = null;
+		Statement stmt = conexion.getConexion().createStatement();
+		String sql = String.format("SELECT * FROM Olimpiada WHERE id_olimpiada = %d", id);
+		System.out.println(sql);
+		stmt.executeQuery(sql);
+		ResultSet rs = stmt.getResultSet();
+		if (rs.next()) {
+			oli = new Olimpiada(rs.getInt(1),rs.getString("nombre"), rs.getInt("anio"), rs.getString("temporada"), rs.getString("ciudad"));
+		}
+		conexion.closeConexion();
+		return oli;
 	}
 
 	/**
 	 * Retrieves the data from the Participacion table in the database and returns
 	 * an ObservableList all entries in it.
+	 * 
 	 * @return ObservableList with the Participacion objects from the database.
 	 * @see net.urtzi.olimpiadas.models.Participacion
 	 */
@@ -399,82 +631,110 @@ public class DBManager {
 		}
 		return participaciones;
 	}
+	
+	
+
 	/**
-	 * Adds a new Participacion into the database, in case it does exist or the connection fails, throws and exception.
+	 * Adds a new Participacion into the database, in case it does exist or the
+	 * connection fails, throws and exception.
+	 * 
 	 * @param newOlimpiada the Participacion to be added into the database.
 	 * @throws SQLException if it already exists or the connection raised errors.
 	 * @see net.urtzi.olimpiadas.models.Participacion
 	 */
 	public void addParticipacion(Participacion newParticipacion) throws SQLException {
 		conexion = new ConnectionDB();
-		String sqlAddParticipacion = "INSERT INTO Participacion VALUES(" + newParticipacion.getDeportista().getId() + "," + newParticipacion.getEvento().getId() + "," + newParticipacion.getEquipo().getId() + "," + newParticipacion.getEdad() + "," + newParticipacion.getMedalla()+ ")";
+		String sqlAddParticipacion = "INSERT INTO Participacion VALUES(" + newParticipacion.getDeportista().getId()
+				+ "," + newParticipacion.getEvento().getId() + "," + newParticipacion.getEquipo().getId() + ","
+				+ newParticipacion.getEdad() + ",'" + newParticipacion.getMedalla() + "')";
 		Statement pstm = conexion.getConexion().prepareStatement(sqlAddParticipacion);
 		pstm.executeUpdate(sqlAddParticipacion);
 		conexion.closeConexion();
 	}
+	
 	/**
-	 * Modifies the oldParticipacion entry from the database with the values for the newParticipacion.
-	 * @param oldParticipacion the instance to be modified
-	 * @param newParticipacion the new version of the object
-	 * @throws SQLException if something goes wrong with the SQL syntax or the connection.
-	 * @see net.urtzi.olimpiadas.models.Participacion
+	 * Uses a connection to the database to delete a Participacion object from the
+	 * database
+	 * 
+	 * @param participacion the Participacion to be erased
+	 * @throws SQLException if the connection raises errors or the SQL query has errors .
+	 * @see net.urtzi.olimpiadas.models.Olimpiada
 	 */
-	public void modificarParticipacion(Participacion oldParticipacion, Participacion newParticipacion) throws SQLException {
+	public void borrarParticipacion(Participacion participacion) throws SQLException {
 		conexion = new ConnectionDB();
 		Statement stmt = conexion.getConexion().createStatement();
-		String sql = "UPDATE Deporte " 
-					+ "SET id_deportista=" + newParticipacion.getDeportista().getId() + "," 
-					+ "id_evento=" + newParticipacion.getEvento().getId() + ","
-					+ "id_equipo=" + newParticipacion.getEquipo().getId() + ","
-					+ "temporada=" + newParticipacion.getEdad() + ","
-					+ "ciudad='" + newParticipacion.getMedalla() + "' "
-					+ "WHERE id_deportista=" + oldParticipacion.getDeportista().getId() + " AND "
-					+ "id_evento=" + oldParticipacion.getEvento().getId() + " AND "
-					+ "id_equipo=" + oldParticipacion.getEquipo().getId();
+		String sql = "DELETE FROM Participacion WHERE id=" + participacion.getEvento();
 		stmt.executeUpdate(sql);
 		conexion.closeConexion();
 	}
-	
+
+	/**
+	 * Modifies the oldParticipacion entry from the database with the values for the
+	 * newParticipacion.
+	 * 
+	 * @param oldParticipacion the instance to be modified
+	 * @param newParticipacion the new version of the object
+	 * @throws SQLException if something goes wrong with the SQL syntax or the
+	 *                      connection.
+	 * @see net.urtzi.olimpiadas.models.Participacion
+	 */
+	public void modificarParticipacion(Participacion oldParticipacion, Participacion newParticipacion)
+			throws SQLException {
+		conexion = new ConnectionDB();
+		Statement stmt = conexion.getConexion().createStatement();
+		String sql = "UPDATE Deporte " + "SET id_deportista=" + newParticipacion.getDeportista().getId() + ","
+				+ "id_evento=" + newParticipacion.getEvento().getId() + "," + "id_equipo="
+				+ newParticipacion.getEquipo().getId() + "," + "temporada=" + newParticipacion.getEdad() + ","
+				+ "ciudad='" + newParticipacion.getMedalla() + "' " + "WHERE id_deportista="
+				+ oldParticipacion.getDeportista().getId() + " AND " + "id_evento="
+				+ oldParticipacion.getEvento().getId() + " AND " + "id_equipo=" + oldParticipacion.getEquipo().getId();
+		stmt.executeUpdate(sql);
+		conexion.closeConexion();
+	}
+
 	public void addItemToDatabase(Object item) {
 		try {
 			if (item instanceof Deporte) {
-				addDeporte((Deporte)item);
+				addDeporte((Deporte) item);
 			} else if (item instanceof Deportista) {
 				addDeportista((Deportista) item);
 			} else if (item instanceof Equipo) {
 				addEquipo((Equipo) item);
-			} else if (item instanceof Evento){
+			} else if (item instanceof Evento) {
 				addEvento((Evento) item);
-			}else if (item instanceof Olimpiada){
-				addOlimpiada((Olimpiada)item);
-			}else if (item instanceof Participacion) {
+			} else if (item instanceof Olimpiada) {
+				addOlimpiada((Olimpiada) item);
+			} else if (item instanceof Participacion) {
 				addParticipacion((Participacion) item);
 			}
 		} catch (SQLException ex) {
 			System.out.println("Error en la adicion de datos a la base de datos.");
+			ex.printStackTrace();
 		}
 	}
+
 	/**
-	 * Returns an ObservableList with all the items in the given database table. 
+	 * Returns an ObservableList with all the items in the given database table.
+	 * 
 	 * @param tableName The name of the table to get the items from.
 	 */
 	public ObservableList<?> loadFromDatabase(String tableName) {
 		tableName = tableName.toLowerCase();
 		switch (tableName) {
-			case "deporte":
-				return cargarDeportes();
-			case "deportista":
-				return cargarDeportistas();
-			case "equipo":
-				return cargarEquipos();
-			case "evento":
-				return cargarEventos();
-			case "olimpiada":
-				return cargarOlimpiadas();
-			case "participacion":
-				return cargarParticipaciones();
-			default:
-				return FXCollections.observableArrayList();
+		case "deporte":
+			return cargarDeportes();
+		case "deportista":
+			return cargarDeportistas();
+		case "equipo":
+			return cargarEquipos();
+		case "evento":
+			return cargarEventos();
+		case "olimpiada":
+			return cargarOlimpiadas();
+		case "participacion":
+			return cargarParticipaciones();
+		default:
+			return FXCollections.observableArrayList();
 		}
 	}
 
