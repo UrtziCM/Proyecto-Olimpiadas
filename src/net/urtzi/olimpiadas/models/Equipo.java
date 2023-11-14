@@ -13,6 +13,7 @@ public class Equipo {
 		super();
 		this.nombre = nombre;
 		this.abreviatura = abreviatura;
+		this.id = -1;
 	}
 	public String getNombre() {
 		return nombre;

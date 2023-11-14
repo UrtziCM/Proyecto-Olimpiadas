@@ -11,6 +11,7 @@ public class Olimpiada {
 		this.ciudad = ciudad;
 	}
 	public Olimpiada( String nombre, int anio, String temporada, String ciudad) {
+		this.id = -1;
 		this.anio = anio;
 		this.nombre = nombre;
 		this.temporada = temporada;
