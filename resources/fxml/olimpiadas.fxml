@@ -72,7 +72,7 @@
                     </rowConstraints>
                      <children>
                         <Button fx:id="anadirButton" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#anadirEntrada" text="Añadir / Modificar" GridPane.halignment="CENTER" GridPane.rowIndex="5" GridPane.valignment="CENTER" />
-                        <Button fx:id="borrarButton" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Borrar" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                        <Button fx:id="borrarButton" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#anadirBorrarEntrada" text="Borrar" GridPane.columnIndex="1" GridPane.rowIndex="5" />
                         <CheckBox fx:id="replaceCheckBox" alignment="CENTER" mnemonicParsing="false" text="¿Reemplazar si existe?" GridPane.columnSpan="2147483647" GridPane.halignment="CENTER" GridPane.rowIndex="6" GridPane.valignment="CENTER" />
                      </children>
                   </GridPane>
