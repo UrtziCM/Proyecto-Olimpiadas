@@ -454,5 +454,28 @@ public class DBManager {
 			System.out.println("Error en la adicion de datos a la base de datos.");
 		}
 	}
+	/**
+	 * Returns an ObservableList with all the items in the given database table. 
+	 * @param tableName The name of the table to get the items from.
+	 */
+	public ObservableList<?> loadFromDatabase(String tableName) {
+		tableName = tableName.toLowerCase();
+		switch (tableName) {
+			case "deporte":
+				return cargarDeportes();
+			case "deportista":
+				return cargarDeportistas();
+			case "equipo":
+				return cargarEquipos();
+			case "evento":
+				return cargarEventos();
+			case "olimpiada":
+				return cargarOlimpiadas();
+			case "participacion":
+				return cargarParticipaciones();
+			default:
+				return FXCollections.observableArrayList();
+		}
+	}
 
 }
