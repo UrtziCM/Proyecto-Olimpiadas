@@ -1,6 +1,7 @@
 package net.urtzi.olimpiadas.controller;
 
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.ResourceBundle;
@@ -15,6 +16,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.Labeled;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -73,30 +75,40 @@ public class OlimpiadaController implements javafx.fxml.Initializable {
 		prepareTablesForDBItems();
 		deporteTableView.setItems(gestor.cargarDeportes());
 		deporteTableView.setOnMouseClicked(e -> {
-			if (deporteTableView.getSelectionModel().getSelectedItem() == null) return;
-			switch (currentTab) {
-				case "deporte":
-					populateDataManipulationGridPane();
-					break;
-				case "deportista":
-					populateDataManipulationGridPane();
-					break;
-				case "equipo":
-					populateDataManipulationGridPane();
-					break;
-				case "evento":
-					populateDataManipulationGridPane();
-					break;
-				case "olimpiada":
-					populateDataManipulationGridPane();
-					break;
-				case "participacion":
-					populateDataManipulationGridPane();
-					break;
-				default:
-					return FXCollections.observableArrayList();
+			Object selectedItem = deporteTableView.getSelectionModel().getSelectedItem();
+			if (selectedItem != null) {	
+				populateDataManipulationGridPane(selectedItem);
 			}
-			
+		});
+		deportistaTableView.setOnMouseClicked(e -> {
+			Object selectedItem = deportistaTableView.getSelectionModel().getSelectedItem();
+			if (selectedItem != null) {	
+				populateDataManipulationGridPane(selectedItem);
+			}
+		});
+		equipoTableView.setOnMouseClicked(e -> {
+			Object selectedItem = equipoTableView.getSelectionModel().getSelectedItem();
+			if (selectedItem != null) {	
+				populateDataManipulationGridPane(selectedItem);
+			}
+		});
+		eventoTableView.setOnMouseClicked(e -> {
+			Object selectedItem = eventoTableView.getSelectionModel().getSelectedItem();
+			if (selectedItem != null) {	
+				populateDataManipulationGridPane(selectedItem);
+			}
+		});
+		participacionTableView.setOnMouseClicked(e -> {
+			Object selectedItem = participacionTableView.getSelectionModel().getSelectedItem();
+			if (selectedItem != null) {	
+				populateDataManipulationGridPane(selectedItem);
+			}
+		});
+		olimpiadaTableView.setOnMouseClicked(e -> {
+			Object selectedItem = olimpiadaTableView.getSelectionModel().getSelectedItem();
+			if (selectedItem != null) {	
+				populateDataManipulationGridPane(selectedItem);
+			}
 		});
 	}
 	
@@ -144,10 +156,112 @@ public class OlimpiadaController implements javafx.fxml.Initializable {
     
 
     @FXML
-    void anadirEntrada(ActionEvent event) {
-    	gestor.addItemToDatabase(null);
+    void anadirEntrada(ActionEvent event) throws SQLException {
+    	Object[] data = new Object[5];
+    	switch (currentTab) {
+	    	case "deporte":
+	    		data[0] = ((TextField)dataManipulationGridPane.getChildren().get(1)).getText();
+	    		gestor.addItemToDatabase(new Deporte((String) data[0]));
+	    		cargarDeporte(event);
+	    		break;
+	    	case "deportista":
+	    		data[0] = ((TextField)dataManipulationGridPane.getChildren().get(1)).getText();
+	    		data[1] = ((TextField)dataManipulationGridPane.getChildren().get(3)).getText();
+	    		data[2] = ((TextField)dataManipulationGridPane.getChildren().get(5)).getText();
+	    		data[3] = ((TextField)dataManipulationGridPane.getChildren().get(7)).getText();
+	    		gestor.addItemToDatabase(new Deportista((String) data[0],((String) data[1]).charAt(0),Integer.parseInt((String) data[2]),Integer.parseInt((String) data[3])));
+	    		cargarDeportista(event);
+	    		break;
+	    	case "equipo":
+	    		data[0] = ((TextField)dataManipulationGridPane.getChildren().get(1)).getText().toString();
+	    		data[1] = ((TextField)dataManipulationGridPane.getChildren().get(3)).getText().toString();
+	    		gestor.addItemToDatabase(new Equipo((String)data[0], (String)data[1]));
+	    		cargarEquipo(event);
+	    		break;
+	    	case "evento":
+	    		data[0] = ((TextField)dataManipulationGridPane.getChildren().get(1)).getText().toString();
+	    		data[1] = ((ComboBox<String>)dataManipulationGridPane.getChildren().get(3)).getSelectionModel().getSelectedItem();
+	    		data[2] = ((ComboBox<String>)dataManipulationGridPane.getChildren().get(5)).getSelectionModel().getSelectedItem();
+	    		data[1] = gestor.getOlimpiadaByID(Integer.parseInt(data[1].toString().substring(0, data[1].toString().indexOf(" ")).trim()));
+	    		data[2] = gestor.getDeporteByID(Integer.parseInt(data[2].toString().substring(0, data[2].toString().trim().indexOf(" ")).trim()));
+	    		gestor.addItemToDatabase(new Evento((String)data[0],(Olimpiada)data[1],(Deporte)data[2]));
+	    		cargarEvento(event);
+	    		break;
+	    	case "olimpiada":
+	    		data[0] = ((TextField)dataManipulationGridPane.getChildren().get(1)).getText().toString();
+	    		data[1] = ((TextField)dataManipulationGridPane.getChildren().get(3)).getText().toString();
+	    		data[2] = ((TextField)dataManipulationGridPane.getChildren().get(5)).getText().toString();
+	    		data[3] = ((TextField)dataManipulationGridPane.getChildren().get(7)).getText().toString();
+	    		gestor.addItemToDatabase(new Olimpiada((String)data[0], Integer.parseInt((String) data[1]), (String)data[2], (String)data[3]));
+	    		cargarOlimpiada(event);
+	    		break;
+	    	case "participacion":
+	    		data[0] = ((ComboBox<String>)dataManipulationGridPane.getChildren().get(1)).getSelectionModel().getSelectedItem();
+	    		data[1] = ((ComboBox<String>)dataManipulationGridPane.getChildren().get(3)).getSelectionModel().getSelectedItem();
+	    		data[2] = ((ComboBox<String>)dataManipulationGridPane.getChildren().get(5)).getSelectionModel().getSelectedItem();
+	    		data[3] = ((TextField)dataManipulationGridPane.getChildren().get(7)).getText().toString();
+	    		data[4] = ((TextField)dataManipulationGridPane.getChildren().get(9)).getText().toString();
+	    		data[0] = gestor.getDeportistaByID(Integer.parseInt(data[0].toString().substring(0, data[1].toString().indexOf(" ")).trim()));
+	    		data[1] = gestor.getEventoByID(Integer.parseInt(data[1].toString().substring(0, data[1].toString().indexOf(" ")).trim()));
+	    		data[2] = gestor.getEquipoByID(Integer.parseInt(data[2].toString().substring(0, data[2].toString().indexOf(" ")).trim()));
+	    		gestor.addItemToDatabase(new Participacion((Deportista)data[0], (Evento)data[1], (Equipo)data[2], Integer.parseInt((String) data[3]), (String)data[4]));
+	    		cargarParticipacion(event);
+	    		break;
+    	}
+    	
     }
 	
+    @FXML
+    void borrarEntrada(ActionEvent event) throws SQLException {
+    	Object[] data = new Object[5];
+    	switch (currentTab) {
+	    	case "deporte":
+	    		Deporte selectedDeporte = deporteTableView.getSelectionModel().getSelectedItem();
+	    		if (selectedDeporte != null)
+	    			gestor.borrarDeporte(selectedDeporte);
+	    		break;
+	    	case "deportista":
+	    		Deportista selectedDeportista = deportistaTableView.getSelectionModel().getSelectedItem();
+	    		if (selectedDeportista != null)
+	    			gestor.borrarDeportista(selectedDeportista);
+	    		break;
+	    	case "equipo":
+	    		Equipo selectedEquipo = equipoTableView.getSelectionModel().getSelectedItem();
+	    		if (selectedEquipo != null)
+	    			gestor.borrarEquipo(selectedEquipo);
+	    		break;
+	    	case "evento":
+	    		data[0] = ((TextField)dataManipulationGridPane.getChildren().get(1)).getText().toString();
+	    		data[1] = ((ComboBox<String>)dataManipulationGridPane.getChildren().get(3)).getSelectionModel().getSelectedItem();
+	    		data[2] = ((ComboBox<String>)dataManipulationGridPane.getChildren().get(5)).getSelectionModel().getSelectedItem();
+	    		data[1] = gestor.getOlimpiadaByID(Integer.parseInt(data[1].toString().substring(0, data[1].toString().indexOf(" ")).trim()));
+	    		data[2] = gestor.getDeporteByID(Integer.parseInt(data[2].toString().substring(0, data[2].toString().trim().indexOf(" ")).trim()));
+	    		gestor.addItemToDatabase(new Evento((String)data[0],(Olimpiada)data[1],(Deporte)data[2]));
+	    		cargarEvento(event);
+	    		break;
+	    	case "olimpiada":
+	    		data[0] = ((TextField)dataManipulationGridPane.getChildren().get(1)).getText().toString();
+	    		data[1] = ((TextField)dataManipulationGridPane.getChildren().get(3)).getText().toString();
+	    		data[2] = ((TextField)dataManipulationGridPane.getChildren().get(5)).getText().toString();
+	    		data[3] = ((TextField)dataManipulationGridPane.getChildren().get(7)).getText().toString();
+	    		gestor.addItemToDatabase(new Olimpiada((String)data[0], Integer.parseInt((String) data[1]), (String)data[2], (String)data[3]));
+	    		cargarOlimpiada(event);
+	    		break;
+	    	case "participacion":
+	    		data[0] = ((ComboBox<String>)dataManipulationGridPane.getChildren().get(1)).getSelectionModel().getSelectedItem();
+	    		data[1] = ((ComboBox<String>)dataManipulationGridPane.getChildren().get(3)).getSelectionModel().getSelectedItem();
+	    		data[2] = ((ComboBox<String>)dataManipulationGridPane.getChildren().get(5)).getSelectionModel().getSelectedItem();
+	    		data[3] = ((TextField)dataManipulationGridPane.getChildren().get(7)).getText().toString();
+	    		data[4] = ((TextField)dataManipulationGridPane.getChildren().get(9)).getText().toString();
+	    		data[0] = gestor.getDeportistaByID(Integer.parseInt(data[0].toString().substring(0, data[1].toString().indexOf(" ")).trim()));
+	    		data[1] = gestor.getEventoByID(Integer.parseInt(data[1].toString().substring(0, data[1].toString().indexOf(" ")).trim()));
+	    		data[2] = gestor.getEquipoByID(Integer.parseInt(data[2].toString().substring(0, data[2].toString().indexOf(" ")).trim()));
+	    		gestor.addItemToDatabase(new Participacion((Deportista)data[0], (Evento)data[1], (Equipo)data[2], Integer.parseInt((String) data[3]), (String)data[4]));
+	    		cargarParticipacion(event);
+	    		break;
+    	}
+    	
+    }
 
     /**
      * Prepares all the TableViews to receive Objects of them item type. Looping through their collumns and checking the name.
@@ -208,21 +322,98 @@ public class OlimpiadaController implements javafx.fxml.Initializable {
     private void populateDataManipulationGridPane(Object item) {
     	if (item instanceof Deporte) {
 			for (Node node : dataManipulationGridPane.getChildren()) {
-				if (node.getClass() == TextField.class) {
+				if (node instanceof TextField) {
 					TextField textfield = (TextField) node;
 					textfield.setText(((Deporte)item).getNombre());
 				}
 			}
 		} else if (item instanceof Deportista) {
-			addDeportista((Deportista) item);
+			for (int i= 0;i < dataManipulationGridPane.getChildren().size();i++) {
+				Node node = dataManipulationGridPane.getChildren().get(i);
+				if (node instanceof TextField) {
+					TextField textfield = (TextField) node;
+					switch (i) {
+						case 1: 
+							textfield.setText(((Deportista)item).getNombre());
+							break;
+						case 3: 
+							textfield.setText(((Deportista)item).getSexo()+"");
+							break;
+						case 5: 
+							textfield.setText(((Deportista)item).getPeso()+"");
+							break;
+						case 7: 
+							textfield.setText(((Deportista)item).getAltura()+"");
+							break;
+					}
+				}
+				
+			}
 		} else if (item instanceof Equipo) {
-			addEquipo((Equipo) item);
+			for (int i= 0;i < dataManipulationGridPane.getChildren().size();i++) {
+				Node node = dataManipulationGridPane.getChildren().get(i);
+				if (node instanceof TextField) {
+					TextField textfield = (TextField) node;
+					switch (i) {
+						case 1: 
+							textfield.setText(((Equipo)item).getNombre());
+							break;
+						case 3: 
+							textfield.setText(((Equipo)item).getAbreviatura());
+							break;
+					}
+				}
+				
+			}
+			
 		} else if (item instanceof Evento){
-			addEvento((Evento) item);
+			for (int i= 0;i < dataManipulationGridPane.getChildren().size();i++) {
+				Node node = dataManipulationGridPane.getChildren().get(i);
+				if (node instanceof TextField) {
+					TextField textfield = (TextField) node;
+					if (i == 1) {
+						textfield.setText(((Evento)item).getNombre());
+					}
+				}
+			}	
 		}else if (item instanceof Olimpiada){
-			addOlimpiada((Olimpiada)item);
+			for (int i= 0;i < dataManipulationGridPane.getChildren().size();i++) {
+				Node node = dataManipulationGridPane.getChildren().get(i);
+				if (node instanceof TextField) {
+					TextField textfield = (TextField) node;
+					switch (i) {
+						case 1: 
+							textfield.setText(((Olimpiada)item).getNombre());
+							break;
+						case 3: 
+							textfield.setText(((Olimpiada)item).getAnio()+"");
+							break;
+						case 5: 
+							textfield.setText(((Olimpiada)item).getTemporada());
+							break;
+						case 7: 
+							textfield.setText(((Olimpiada)item).getCiudad());
+							break;
+
+					}
+				}
+			}
 		}else if (item instanceof Participacion) {
-			addParticipacion((Participacion) item);
+			for (int i= 0;i < dataManipulationGridPane.getChildren().size();i++) {
+				Node node = dataManipulationGridPane.getChildren().get(i);
+				if (node instanceof TextField) {
+					TextField textfield = (TextField) node;
+					switch (i) {
+						case 7: 
+							textfield.setText(((Participacion)item).getMedalla());
+							break;
+						case 9: 
+							textfield.setText(((Participacion)item).getEdad()+"");
+							break;
+
+					}
+				}
+			}
 		}
     }
 
@@ -266,7 +457,7 @@ public class OlimpiadaController implements javafx.fxml.Initializable {
     /**
      * Checks if the given string (inputStr) contains any of the items in the items list.
      * @param inputStr The strign to be checked.
-     * @param items A list of strings to check.
+     * @param items A list of strings to search.
      * @return true if it is contained false if not.
      */
     private static boolean stringContainsItemFromList(String inputStr, String[] items) {
