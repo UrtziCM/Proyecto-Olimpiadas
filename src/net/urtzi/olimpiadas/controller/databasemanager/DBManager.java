@@ -64,7 +64,7 @@ public class DBManager {
 		Statement pstm = conexion.getConexion().createStatement();
 		String sqlAddDeporte;
 		if (newDeporte.getId() != -1) {
-			sqlAddDeporte = "REPLACE INTO Deporte VALUES(" + newDeporte.getId() + "," + newDeporte.getNombre() + ")";
+			sqlAddDeporte = "REPLACE INTO Deporte VALUES(" + newDeporte.getId() + ",'" + newDeporte.getNombre() + "')";
 		} else {
 			sqlAddDeporte = "REPLACE INTO Deporte(nombre) VALUES('" + newDeporte.getNombre() + "')";
 		}
@@ -250,11 +250,11 @@ public class DBManager {
 	}
 
 	/**
-	 * Retrieves the data from the Deportista table in the database and returns an
+	 * Retrieves the data from the Equipo table in the database and returns an
 	 * ObservableList all entries in it.
 	 * 
-	 * @return ObservableList with the Deportista objects from the database.
-	 * @see net.urtzi.olimpiadas.models.Deportista
+	 * @return ObservableList with the Equipo objects from the database.
+	 * @see net.urtzi.olimpiadas.models.Equipo
 	 */
 	public ObservableList<Equipo> cargarEquipos() {
 		ObservableList<Equipo> equipos = FXCollections.observableArrayList();

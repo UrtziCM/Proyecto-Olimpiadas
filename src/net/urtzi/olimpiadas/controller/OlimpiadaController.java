@@ -158,28 +158,39 @@ public class OlimpiadaController implements javafx.fxml.Initializable {
 	@FXML
 	void anadirEntrada(ActionEvent event) throws SQLException {
 		Object[] data = new Object[5];
+		int id;
+		boolean idCambiada = false;
+		if (deporteTableView.getSelectionModel().getSelectedItem() != null) {
+			idCambiada = true;
+		}
 		switch (currentTab) {
 		case "deporte":
+			id =(idCambiada)?deporteTableView.getSelectionModel().getSelectedItem().getId():-1;
+
 			data[0] = ((TextField) dataManipulationGridPane.getChildren().get(1)).getText();
-			gestor.addItemToDatabase(new Deporte((String) data[0]));
+			gestor.addItemToDatabase(new Deporte(id,(String) data[0]));
 			cargarDeporte(event);
 			break;
 		case "deportista":
+			id = (idCambiada)?deportistaTableView.getSelectionModel().getSelectedItem().getId():-1;
+
 			data[0] = ((TextField) dataManipulationGridPane.getChildren().get(1)).getText();
 			data[1] = ((TextField) dataManipulationGridPane.getChildren().get(3)).getText();
 			data[2] = ((TextField) dataManipulationGridPane.getChildren().get(5)).getText();
 			data[3] = ((TextField) dataManipulationGridPane.getChildren().get(7)).getText();
-			gestor.addItemToDatabase(new Deportista((String) data[0], ((String) data[1]).charAt(0),
+			gestor.addItemToDatabase(new Deportista(id,(String) data[0], ((String) data[1]).charAt(0),
 					Integer.parseInt((String) data[2]), Integer.parseInt((String) data[3])));
 			cargarDeportista(event);
 			break;
 		case "equipo":
+			id =(idCambiada)? equipoTableView.getSelectionModel().getSelectedItem().getId():-1;
 			data[0] = ((TextField) dataManipulationGridPane.getChildren().get(1)).getText().toString();
 			data[1] = ((TextField) dataManipulationGridPane.getChildren().get(3)).getText().toString();
-			gestor.addItemToDatabase(new Equipo((String) data[0], (String) data[1]));
+			gestor.addItemToDatabase(new Equipo(id,(String) data[0], (String) data[1]));
 			cargarEquipo(event);
 			break;
 		case "evento":
+			id =(idCambiada)? eventoTableView.getSelectionModel().getSelectedItem().getId():-1;
 			data[0] = ((TextField) dataManipulationGridPane.getChildren().get(1)).getText().toString();
 			data[1] = ((ComboBox<String>) dataManipulationGridPane.getChildren().get(3)).getSelectionModel()
 					.getSelectedItem();
@@ -189,15 +200,16 @@ public class OlimpiadaController implements javafx.fxml.Initializable {
 					Integer.parseInt(data[1].toString().substring(0, data[1].toString().indexOf(" ")).trim()));
 			data[2] = gestor.getDeporteByID(
 					Integer.parseInt(data[2].toString().substring(0, data[2].toString().trim().indexOf(" ")).trim()));
-			gestor.addItemToDatabase(new Evento((String) data[0], (Olimpiada) data[1], (Deporte) data[2]));
+			gestor.addItemToDatabase(new Evento(id,(String) data[0], (Olimpiada) data[1], (Deporte) data[2]));
 			cargarEvento(event);
 			break;
 		case "olimpiada":
+			id =(idCambiada)? olimpiadaTableView.getSelectionModel().getSelectedItem().getId():-1;
 			data[0] = ((TextField) dataManipulationGridPane.getChildren().get(1)).getText().toString();
 			data[1] = ((TextField) dataManipulationGridPane.getChildren().get(3)).getText().toString();
 			data[2] = ((TextField) dataManipulationGridPane.getChildren().get(5)).getText().toString();
 			data[3] = ((TextField) dataManipulationGridPane.getChildren().get(7)).getText().toString();
-			gestor.addItemToDatabase(new Olimpiada((String) data[0], Integer.parseInt((String) data[1]),
+			gestor.addItemToDatabase(new Olimpiada(id,(String) data[0], Integer.parseInt((String) data[1]),
 					(String) data[2], (String) data[3]));
 			cargarOlimpiada(event);
 			break;
