@@ -64,9 +64,9 @@ public class DBManager {
 		Statement pstm = conexion.getConexion().createStatement();
 		String sqlAddDeporte;
 		if (newDeporte.getId() != -1) {
-			sqlAddDeporte = "INSERT INTO Deporte VALUES(" + newDeporte.getId() + "," + newDeporte.getNombre() + ")";
+			sqlAddDeporte = "REPLACE INTO Deporte VALUES(" + newDeporte.getId() + "," + newDeporte.getNombre() + ")";
 		} else {
-			sqlAddDeporte = "INSERT INTO Deporte(nombre) VALUES('" + newDeporte.getNombre() + "')";
+			sqlAddDeporte = "REPLACE INTO Deporte(nombre) VALUES('" + newDeporte.getNombre() + "')";
 		}
 		pstm.executeUpdate(sqlAddDeporte);
 		conexion.closeConexion();
@@ -84,7 +84,7 @@ public class DBManager {
 	public void borrarDeporte(Deporte deporte) throws SQLException {
 		conexion = new ConnectionDB();
 		Statement stmt = conexion.getConexion().createStatement();
-		String sql = "DELETE FROM Deporte WHERE id=" + deporte.getId();
+		String sql = "DELETE FROM Deporte WHERE id_deporte=" + deporte.getId();
 		stmt.executeUpdate(sql);
 		conexion.closeConexion();
 	}
@@ -104,7 +104,7 @@ public class DBManager {
 		conexion = new ConnectionDB();
 		Statement stmt = conexion.getConexion().createStatement();
 		String sql = "UPDATE Deporte " + "SET nombre='" + newDeporte.getNombre() + "'," + "id_deporte="
-				+ newDeporte.getId() + " WHERE id=" + oldDeporte.getId();
+				+ newDeporte.getId() + " WHERE id_deporte=" + oldDeporte.getId();
 		stmt.executeUpdate(sql);
 		conexion.closeConexion();
 	}
@@ -177,11 +177,11 @@ public class DBManager {
 		conexion = new ConnectionDB();
 		String sqlAddDeportista;
 		if (newDeportista.getId() != -1) {
-			sqlAddDeportista = "INSERT INTO Deportista VALUES(" + newDeportista.getId() + ",'"
+			sqlAddDeportista = "REPLACE INTO Deportista VALUES(" + newDeportista.getId() + ",'"
 					+ newDeportista.getNombre() + "','" + newDeportista.getSexo() + "'," + newDeportista.getPeso() + ","
 					+ newDeportista.getAltura() + ")";
 		} else {
-			sqlAddDeportista = "INSERT INTO Deportista (nombre,sexo,peso,altura) VALUES('" + newDeportista.getNombre()
+			sqlAddDeportista = "REPLACE INTO Deportista (nombre,sexo,peso,altura) VALUES('" + newDeportista.getNombre()
 					+ "','" + newDeportista.getSexo() + "'," + newDeportista.getPeso() + "," + newDeportista.getAltura()
 					+ ")";
 		}
@@ -206,7 +206,7 @@ public class DBManager {
 		Statement stmt = conexion.getConexion().createStatement();
 		String sql = "UPDATE Deporte " + "SET id_deportista=" + newDeportista.getId() + "," + "nombre='"
 				+ newDeportista.getNombre() + "'," + "sexo='" + newDeportista.getSexo() + "'," + "peso="
-				+ newDeportista.getPeso() + "," + "altura=" + newDeportista.getAltura() + " WHERE id="
+				+ newDeportista.getPeso() + "," + "altura=" + newDeportista.getAltura() + " WHERE id_deportista="
 				+ oldDeportista.getId();
 		stmt.executeUpdate(sql);
 		conexion.closeConexion();
@@ -223,7 +223,7 @@ public class DBManager {
 	public void borrarDeportista(Deportista deportista) throws SQLException {
 		conexion = new ConnectionDB();
 		Statement stmt = conexion.getConexion().createStatement();
-		String sql = "DELETE FROM Deportista WHERE id=" + deportista.getId();
+		String sql = "DELETE FROM Deportista WHERE id_deportista=" + deportista.getId();
 		stmt.executeUpdate(sql);
 		conexion.closeConexion();
 	}
@@ -295,10 +295,10 @@ public class DBManager {
 			conexion = new ConnectionDB();
 			String sqlAddEquipo;
 			if (newEquipo.getId() != -1) {
-				sqlAddEquipo = "INSERT INTO Equipo VALUES(" + newEquipo.getId() + ",'" + newEquipo.getNombre() + "','"
+				sqlAddEquipo = "REPLACE INTO Equipo VALUES(" + newEquipo.getId() + ",'" + newEquipo.getNombre() + "','"
 						+ newEquipo.getAbreviatura() + "')";
 			} else {
-				sqlAddEquipo = "INSERT INTO Equipo(nombre,abreviatura) VALUES('" + newEquipo.getNombre() + "','"
+				sqlAddEquipo = "REPLACE INTO Equipo(nombre,abreviatura) VALUES('" + newEquipo.getNombre() + "','"
 						+ newEquipo.getAbreviatura() + "')";
 			}
 			PreparedStatement pstm = conexion.getConexion().prepareStatement(sqlAddEquipo);
@@ -341,7 +341,7 @@ public class DBManager {
 	public void borrarEquipo(Equipo equipo) throws SQLException {
 		conexion = new ConnectionDB();
 		Statement stmt = conexion.getConexion().createStatement();
-		String sql = "DELETE FROM Equipo WHERE id=" + equipo.getId();
+		String sql = "DELETE FROM Equipo WHERE id_equipo=" + equipo.getId();
 		stmt.executeUpdate(sql);
 		conexion.closeConexion();
 	}
@@ -414,10 +414,10 @@ public class DBManager {
 		conexion = new ConnectionDB();
 		String sqlAddEvento;
 		if (newEvento.getId() != -1) {
-			sqlAddEvento = "INSERT INTO Evento VALUES(" + newEvento.getId() + ",'" + newEvento.getNombre() + "',"
+			sqlAddEvento = "REPLACE INTO Evento VALUES(" + newEvento.getId() + ",'" + newEvento.getNombre() + "',"
 					+ newEvento.getOlimpiada().getId() + "," + newEvento.getDeporte().getId() + ")";
 		} else {
-			sqlAddEvento = "INSERT INTO Evento (nombre,id_olimpiada,id_deporte) VALUES('" + newEvento.getNombre() + "',"
+			sqlAddEvento = "REPLACE INTO Evento (nombre,id_olimpiada,id_deporte) VALUES('" + newEvento.getNombre() + "',"
 					+ newEvento.getOlimpiada().getId() + "," + newEvento.getDeporte().getId() + ")";
 		}
 		PreparedStatement pstm = conexion.getConexion().prepareStatement(sqlAddEvento);
@@ -457,7 +457,7 @@ public class DBManager {
 	public void borrarEvento(Evento evento) throws SQLException {
 		conexion = new ConnectionDB();
 		Statement stmt = conexion.getConexion().createStatement();
-		String sql = "DELETE FROM Evento WHERE id=" + evento.getId();
+		String sql = "DELETE FROM Evento WHERE id_evento=" + evento.getId();
 		stmt.executeUpdate(sql);
 		conexion.closeConexion();
 	}
@@ -477,7 +477,7 @@ public class DBManager {
 		stmt.executeQuery(sql);
 		ResultSet rs = stmt.getResultSet();
 		if (rs.next()) {
-			eve = new Evento(rs.getInt(1), rs.getString("nombre"), getOlimpiadaByID(rs.getInt("id_olimpiada")), getDeporteByID(rs.getInt("id_deporte")));
+			eve = new Evento(rs.getInt("id_evento"), rs.getString("nombre"), getOlimpiadaByID(rs.getInt("id_olimpiada")), getDeporteByID(rs.getInt("id_deporte")));
 		}
 		conexion.closeConexion();
 		return eve;
@@ -529,11 +529,11 @@ public class DBManager {
 		conexion = new ConnectionDB();
 		String sqlAddOlimpiada;
 		if (newOlimpiada.getId() != -1)
-			sqlAddOlimpiada = "INSERT INTO Olimpiada VALUES(" + newOlimpiada.getId() + ",'" + newOlimpiada.getNombre()
+			sqlAddOlimpiada = "REPLACE INTO Olimpiada VALUES(" + newOlimpiada.getId() + ",'" + newOlimpiada.getNombre()
 					+ "'," + newOlimpiada.getAnio() + ",'" + newOlimpiada.getTemporada() + "','"
 					+ newOlimpiada.getCiudad() + "')";
 		else
-			sqlAddOlimpiada = "INSERT INTO Olimpiada(nombre,anio,temporada,ciudad) VALUES('" + newOlimpiada.getNombre()
+			sqlAddOlimpiada = "REPLACE INTO Olimpiada(nombre,anio,temporada,ciudad) VALUES('" + newOlimpiada.getNombre()
 					+ "'," + newOlimpiada.getAnio() + ",'" + newOlimpiada.getTemporada() + "','"
 					+ newOlimpiada.getCiudad() + "')";
 		Statement pstm = conexion.getConexion().prepareStatement(sqlAddOlimpiada);
@@ -574,7 +574,7 @@ public class DBManager {
 	public void borrarOlimpiada(Olimpiada olimpiada) throws SQLException {
 		conexion = new ConnectionDB();
 		Statement stmt = conexion.getConexion().createStatement();
-		String sql = "DELETE FROM Olimpiada WHERE id=" + olimpiada.getId();
+		String sql = "DELETE FROM Olimpiada WHERE id_olimpiada=" + olimpiada.getId();
 		stmt.executeUpdate(sql);
 		conexion.closeConexion();
 	}
@@ -588,7 +588,7 @@ public class DBManager {
 		stmt.executeQuery(sql);
 		ResultSet rs = stmt.getResultSet();
 		if (rs.next()) {
-			oli = new Olimpiada(rs.getInt(1),rs.getString("nombre"), rs.getInt("anio"), rs.getString("temporada"), rs.getString("ciudad"));
+			oli = new Olimpiada(rs.getInt("id_olimpiada"),rs.getString("nombre"), rs.getInt("anio"), rs.getString("temporada"), rs.getString("ciudad"));
 		}
 		conexion.closeConexion();
 		return oli;
@@ -614,9 +614,9 @@ public class DBManager {
 						rs.getString("sexo").charAt(0), rs.getInt("peso"), rs.getInt("altura"));
 				Olimpiada ol = new Olimpiada(rs.getInt("id_olimpiada"), rs.getString("nombre_olimpiada"),
 						rs.getInt("anio"), rs.getString("temporada"), rs.getString("ciudad"));
-				Deporte depo = new Deporte(rs.getString("nombre_deporte"));
-				Evento ev = new Evento(rs.getString("nombre_evento"), ol, depo);
-				Equipo eq = new Equipo(rs.getString("nombre_equipo"), rs.getString("iniciales"));
+				Deporte depo = new Deporte(rs.getInt("id_deporte"),rs.getString("nombre_deporte"));
+				Evento ev = new Evento(rs.getInt("id_evento"),rs.getString("nombre_evento"), ol, depo);
+				Equipo eq = new Equipo(rs.getInt("id_equipo"),rs.getString("nombre_equipo"), rs.getString("iniciales"));
 				int edad = rs.getInt("edad");
 				String medalla = rs.getString("medalla");
 				Participacion p = new Participacion(dep, ev, eq, edad, medalla);
@@ -644,7 +644,7 @@ public class DBManager {
 	 */
 	public void addParticipacion(Participacion newParticipacion) throws SQLException {
 		conexion = new ConnectionDB();
-		String sqlAddParticipacion = "INSERT INTO Participacion VALUES(" + newParticipacion.getDeportista().getId()
+		String sqlAddParticipacion = "REPLACE INTO Participacion VALUES(" + newParticipacion.getDeportista().getId()
 				+ "," + newParticipacion.getEvento().getId() + "," + newParticipacion.getEquipo().getId() + ","
 				+ newParticipacion.getEdad() + ",'" + newParticipacion.getMedalla() + "')";
 		Statement pstm = conexion.getConexion().prepareStatement(sqlAddParticipacion);
@@ -663,7 +663,8 @@ public class DBManager {
 	public void borrarParticipacion(Participacion participacion) throws SQLException {
 		conexion = new ConnectionDB();
 		Statement stmt = conexion.getConexion().createStatement();
-		String sql = "DELETE FROM Participacion WHERE id=" + participacion.getEvento();
+		String sql = "DELETE FROM Participacion WHERE id_deportista=%d AND id_evento=%d AND id_equipo=%d AND edad=%d AND medalla='%s'";
+		sql = String.format(sql, participacion.getDeportista().getId(), participacion.getEvento().getId(), participacion.getEquipo().getId(), participacion.getEdad(),participacion.getMedalla());
 		stmt.executeUpdate(sql);
 		conexion.closeConexion();
 	}

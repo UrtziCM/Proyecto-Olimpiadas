@@ -14,6 +14,7 @@ public class MainApplication extends Application {
 		try {
 			Parent root = FXMLLoader.load(this.getClass().getResource("/fxml/olimpiadas.fxml"));
 	    	Scene scene = new Scene( root );
+	    	scene.getStylesheets().add(this.getClass().getResource("/css/main.css").toExternalForm());
 	    	
 	        stage.setTitle("Olimpiadas - Gestion");
 	        stage.setScene(scene);
