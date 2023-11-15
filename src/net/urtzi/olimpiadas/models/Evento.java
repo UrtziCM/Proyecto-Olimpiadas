@@ -14,6 +14,7 @@ public class Evento {
 	}
 	public Evento(String nombre, Olimpiada olimpiada, Deporte deporte) {
 		super();
+		this.id = -1;
 		this.nombre = nombre;
 		this.olimpiada = olimpiada;
 		this.deporte = deporte;

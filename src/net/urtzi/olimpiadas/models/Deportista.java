@@ -17,8 +17,9 @@ public class Deportista {
 		this.sexo = sexo;
 	}
 	
-	public Deportista(String nombre, int peso, int altura, char sexo) {
+	public Deportista(String nombre, char sexo, int peso, int altura) {
 		super();
+		this.id = -1;
 		this.nombre = nombre;
 		this.peso = peso;
 		this.altura = altura;
